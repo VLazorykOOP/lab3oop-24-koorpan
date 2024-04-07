@@ -76,6 +76,8 @@ int main() {
     cout << "Площа поверхні після зміни сторони: " << tetrahedron.surfaceArea() << endl;
     return 0;
 }*/
+
+
 #include <iostream>
 #include <stdexcept>
 using namespace std;
@@ -84,19 +86,22 @@ class Vector {
 private:
     double elements[3];
     int errorCode;
+    static int objectCount; // Статичний лічильник об'єктів
 public:
-    //конструктори
+    // Конструктори
     Vector() {
         for (int i = 0; i < 3; i++) {
             elements[i] = 0;
         }
         errorCode = 0;
+        objectCount++; // Збільшуємо лічильник при створенні нового об'єкту
     }
     Vector(double val) {
         for (int i = 0; i < 3; i++) {
             elements[i] = val;
         }
         errorCode = 0;
+        objectCount++; // Збільшуємо лічильник при створенні нового об'єкту
     }
     Vector(double* arr) {
         if (arr == nullptr) {
@@ -108,25 +113,30 @@ public:
             }
             errorCode = 0;
         }
+        objectCount++; // Збільшуємо лічильник при створенні нового об'єкту
     }
-    //деструктр
+    // Деструктор
     ~Vector() {
         cout << "Деструктор вектора. Код помилки: " << errorCode << endl;
+        objectCount--; // Зменшуємо лічильник при знищенні об'єкту
     }
-    //фція для встановлення масиву значеннями за замовчуванням
+
+    // Інші методи класу
+
+    // Функція для встановлення масиву значеннями за замовчуванням
     void setElements(double val = 0) {
         for (int i = 0; i < 3; i++) {
             elements[i] = val;
         }
     }
-    //фція для отримання елементу масиву
+    // Функція для отримання елементу масиву
     double getElement(int index) const {
         if (index < 0 || index >= 3) {
             throw out_of_range("Недійсний індекс");
         }
         return elements[index];
     }
-    // фція арифметичних операцій
+    // Функція арифметичних операцій
     Vector add(const Vector& other) const {
         Vector result;
         for (int i = 0; i < 3; i++) {
@@ -155,7 +165,7 @@ public:
         result.elements[2] = elements[0] * other.elements[1] - elements[1] * other.elements[0];
         return result;
     }
-    //фція ділення на ціле
+    // Функція ділення на ціле
     Vector divide(short divisor) const {
         Vector result;
         if (divisor != 0) {
@@ -164,11 +174,11 @@ public:
             }
         }
         else {
-            cout << "НЕ можна дылити на 0!";
+            cout << "НЕ можна ділити на 0!";
         }
         return result;
     }
-    //фції порівняння
+    // Функції порівняння
     bool isEqual(const Vector& other) const {
         for (int i = 0; i < 3; i++) {
             if (elements[i] != other.elements[i]) {
@@ -202,30 +212,36 @@ public:
     bool isLessOrEqual(const Vector& other) const {
         return !isGreater(other);
     }
-    // фція для виведення вектора
+    // Функція для виведення вектора
     void print() const {
         cout << "(" << elements[0] << ", " << elements[1] << ", " << elements[2] << ")" << endl;
     }
-    //фція для підрахунку числа об'єктів даного типу
+
+    // Статичний метод для отримання кількості створених об'єктів
     static int countObjects() {
-        return 0;
+        return objectCount;
     }
 };
+
+// Ініціалізація статичного лічильника класу Vector
+int Vector::objectCount = 0;
+
 int main() {
     setlocale(LC_CTYPE, "Ukr");
-    //Vector тестт
-    Vector v1; // ств об'єкту за доп конструктора за замовчуванням
-    Vector v2(1.5); //ств об'єкту за доп конструктора з одним параметром
+    // Vector тест
+    Vector v1; // Створюємо об'єкт за допомогою конструктора за замовчуванням
+    Vector v2(1.5); // Створюємо об'єкт за допомогою конструктора з одним параметром
     double arr[3] = { 2.5, 3.5, 4.5 };
-    Vector v3(arr); //ств об'єкту за доп конструктора з вказівником
-    //виведення векторів
+    Vector v3(arr); // Створюємо об'єкт за допомогою конструктора з вказівником
+    // Виведення векторів
     cout << "Вектор v1: ";
     v1.print();
     cout << "Вектор v2: ";
     v2.print();
     cout << "Вектор v3: ";
     v3.print();
-    //підрахунок числа об'єктів
+    // Підрахунок числа об'єктів
     cout << "Кількість об'єктів типу Vector: " << Vector::countObjects() << endl;
+    //Деструктор вектора. Код помилки: 0(означає що помилок немає)
     return 0;
 }
